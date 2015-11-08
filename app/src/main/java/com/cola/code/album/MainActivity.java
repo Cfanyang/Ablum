@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ public class MainActivity extends Activity {
     private ProgressDialog mProgressDialog;
 
     private static final int FINISH_LOAD = 1;
+    private Bitmap defaultBitmap;
 
     private AbsListView.RecyclerListener recyclerListener = new AbsListView.RecyclerListener() {
         @Override
@@ -70,6 +72,7 @@ public class MainActivity extends Activity {
                             bmp.recycle();
                             bmp = null;
                         }
+                        iv.setImageBitmap(defaultBitmap);
                     } catch (ClassCastException e) {
 
                     }
@@ -151,6 +154,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        defaultBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.shape_default_pic);
         initView();//初始化控件
         initDatas();//遍历文件
         initEvents();//处理点击事件
