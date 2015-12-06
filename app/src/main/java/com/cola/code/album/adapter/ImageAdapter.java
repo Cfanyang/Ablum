@@ -18,7 +18,7 @@ import java.util.Set;
 /**
  * Created by yanghaoyang on 15/11/5.
  */
-public class ImageAdapter extends BaseAdapter{
+public class ImageAdapter extends BaseAdapter {
     private static Set<String> mSelectedImg = new HashSet<String>();
     private Context mContext;
     private List<String> mImgName;
@@ -60,7 +60,7 @@ public class ImageAdapter extends BaseAdapter{
         // 重置状态
         viewHolder.iv_item.setImageResource(R.drawable.shape_default_pic);
         viewHolder.ib_check.setImageResource(R.drawable.tb_circle);
-        viewHolder.iv_item.setColorFilter(null );
+        viewHolder.iv_item.setColorFilter(null);
 
         ImgLoader.getInstance(3, ImgLoader.Type.FILO).loadImg(mDirPath + "/" + mImgName.get(position), viewHolder
                 .iv_item);
@@ -69,7 +69,7 @@ public class ImageAdapter extends BaseAdapter{
         viewHolder.iv_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mSelectedImg.contains(filePath)) { // 如果已选中
+                if (mSelectedImg.contains(filePath)) { // 如果已选中
                     mSelectedImg.remove(filePath);
                     viewHolder.iv_item.setColorFilter(null);
                     viewHolder.ib_check.setImageResource(R.drawable.tb_circle);
@@ -80,11 +80,11 @@ public class ImageAdapter extends BaseAdapter{
                 }
             }
         });
-        if(mSelectedImg.contains(filePath)) {
+        if (mSelectedImg.contains(filePath)) {
             viewHolder.iv_item.setColorFilter(Color.parseColor("#77000000"));
             viewHolder.ib_check.setImageResource(R.drawable.tb_checkcircle);
         }
-        return convertView ;
+        return convertView;
     }
 
     private class ViewHolder {

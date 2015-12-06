@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.LruCache;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -89,7 +90,10 @@ public class ImgLoader {
 
                         }
                         // 线程池取出一个任务去执行
-                        mThreadPool.execute(getTask());
+                        Runnable task = getTask();
+                        if(task!=null) {
+                            mThreadPool.execute(task);
+                        }
                     }
                 };
                 mSemaphorePoolThreadHandler.release();
@@ -101,6 +105,7 @@ public class ImgLoader {
         // 获取应用最大可用内存
         int maxMemory = (int) Runtime.getRuntime().maxMemory();
         int cacheMemory = maxMemory/8;
+        Log.i("ImgLoader","cacheMemory = " + cacheMemory);
         mLruCache = new LruCache<String,Bitmap>(cacheMemory){
             @Override
             protected int sizeOf(String key, Bitmap value) {
@@ -120,11 +125,15 @@ public class ImgLoader {
      * 从队列中取出一个任务
      * @return 根据队列策略，返回任务
      */
-    private Runnable getTask() {
+    private synchronized Runnable getTask() {
         if(mType == Type.FIFO) {
-            return mTaskQueue.removeFirst();
+            if(mTaskQueue.size()>0) {
+                return mTaskQueue.removeFirst();
+            }
         } else if (mType == Type.FILO) {
-            return mTaskQueue.removeLast();
+            if(mTaskQueue.size()>0) {
+                return mTaskQueue.removeLast();
+            }
         }
         return null;
     }
@@ -254,32 +263,32 @@ public class ImgLoader {
         DisplayMetrics displayMetrics = imageView.getContext().getResources().getDisplayMetrics();
 
         int width = imageView.getWidth();
+        int height = imageView.getHeight();
         if(width <= 0) { // 当imageview没有显示出来时，width = 0
             // 获取imageview在容器中声明的宽度
             width = lp.width;
         }
-        if(width <= 0) { // width有可能是wrap_content或match_parent
-            width = getImageViewFieldValue(imageView,"mMaxWidth");
-        }
+//        if(width <= 0) { // width有可能是wrap_content或match_parent
+//            width = getImageViewFieldValue(imageView,"mMaxWidth");
+//        }
         if(width <= 0) { // 如果最终无法获取，则设置为屏幕宽度
-            width = displayMetrics.widthPixels;
+            width = displayMetrics.widthPixels/3;
         }
 
-        int height = imageView.getHeight();
         if(height <= 0) { // 当imageview没有显示出来时，height = 0
             // 获取imageview在容器中声明的宽度
             height = lp.height;
         }
-        if(height <= 0) { // wheight有可能是wrap_content或match_parent
-            height = getImageViewFieldValue(imageView,"mMaxHeight");
+//        if(height <= 0) { // wheight有可能是wrap_content或match_parent
+//            height = getImageViewFieldValue(imageView,"mMaxHeight");
+//        }
+        if(height <= 0) { // 如果最终无法获取，则设置为屏幕宽度
+            height = displayMetrics.heightPixels/3;
         }
-        if(width <= 0) { // 如果最终无法获取，则设置为屏幕宽度
-            height = displayMetrics.heightPixels;
-        }
-
         imageSize.ImageWidth = width;
         imageSize.ImageHeight = height;
-
+        Log.i("ImgLoader","imageSize.ImageWidth = " + width);
+        Log.i("ImgLoader","imageSize.ImageHeight = " + height);
         return imageSize;
     }
 
@@ -329,6 +338,13 @@ public class ImgLoader {
         ImageView imageView;
         Bitmap bitmap;
         String path;
+    }
+
+    /**
+     * 清空LruCache的缓存
+     */
+    public void clearCache() {
+        mLruCache.evictAll();
     }
 
     private class ImageSize {
