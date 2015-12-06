@@ -6,19 +6,15 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AbsListView;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -57,29 +53,6 @@ public class MainActivity extends Activity {
 
     private static final int FINISH_LOAD = 1;
     private Bitmap defaultBitmap;
-
-    private AbsListView.RecyclerListener recyclerListener = new AbsListView.RecyclerListener() {
-        @Override
-        public void onMovedToScrapHeap(View view) {
-            Log.i("RECYCLE",view.toString());
-            if(view instanceof RelativeLayout) {
-                ImageView iv = (ImageView) view.findViewById(R.id.iv_item);
-                if(iv != null) {
-                    try {
-                        BitmapDrawable drawable = (BitmapDrawable)iv.getDrawable();
-                        Bitmap bmp = drawable.getBitmap();
-                        if (null != bmp && !bmp.isRecycled()){
-                            bmp.recycle();
-                            bmp = null;
-                        }
-                        iv.setImageBitmap(defaultBitmap);
-                    } catch (ClassCastException e) {
-
-                    }
-                }
-            }
-        }
-    };
 
     private Handler mHandler = new Handler() {
         @Override
@@ -143,7 +116,6 @@ public class MainActivity extends Activity {
         }
         mList = Arrays.asList(mCurrentDir.list());
         adapter = new ImageAdapter(this,mList,mCurrentDir.getAbsolutePath());
-        gv.setRecyclerListener(recyclerListener);
         gv.setAdapter(adapter );
         tv_dir_count.setText(mMaxCount + "");
         tv_dir_name.setText(mCurrentDir.getName() );
