@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.GridView;
@@ -23,9 +24,11 @@ import android.widget.Toast;
 import com.cola.code.album.adapter.ImageAdapter;
 import com.cola.code.album.bean.FolderBean;
 import com.cola.code.album.view.ListImgDirPopupWindow;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.lang.String;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -125,11 +128,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        defaultBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.shape_default_pic);
-        initView();//初始化控件
-        initDatas();//遍历文件
-        initEvents();//处理点击事件
+        String str1 = new String("abc");
+        String str2 = new String("abc");
+        Stirng str3 = "abc";
+        Log.i("hashcode","str1 = " + str1 + " str2 = " + str2 + " str3 = " + str3);
+//        Fresco.initialize(this);
+//        setContentView(R.layout.activity_main);
+//        defaultBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.shape_default_pic);
+//        initView();//初始化控件
+//        initDatas();//遍历文件
+//        initEvents();//处理点击事件
     }
 
     private void initEvents() {
